@@ -97,42 +97,73 @@ void drawGround() {
 
 }
 
+void barWellLeft() {
+    GLUquadric* bar = gluNewQuadric();
+
+    glPushMatrix();
+
+    glTranslatef(1.05, 1.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glColor3f(0.0, 0.1, 0.4);
+    gluCylinder(bar, 0.05, 0.05, 1.0, 5.0, 5.0);
+
+    glPopMatrix();
+
+    gluDeleteQuadric(bar);
+}
+
+void barWellRight() {
+    GLUquadric* bar = gluNewQuadric();
+
+    glPushMatrix();
+
+    glTranslatef(-1.05, 1.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glColor3f(0.0, 0.1, 0.4);
+    gluCylinder(bar, 0.05, 0.05, 1.0, 5.0, 5.0);
+
+    glPopMatrix();
+
+    gluDeleteQuadric(bar);
+}
+
 void topWell() {
     GLUquadric* top = gluNewQuadric();
 
     glPushMatrix();
 
-    glTranslatef(0.0, 1.5, 0.0);
+    glTranslatef(0.0, 1.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
     glColor3f(0.2, 0.2, 0.2);
-    gluDisk(top, 0.7, 0.8, 32, 32);
+    gluDisk(top, 1.0, 1.1, 32, 32);
 
     glPopMatrix();
+    gluDeleteQuadric(top);
+
 }
 
 void baseWell() {
-    GLUquadric* cilindruExterior = gluNewQuadric();
-    GLUquadric* cilindruInterior = gluNewQuadric();
+    GLUquadric* cilindru = gluNewQuadric();
+
+    glPushMatrix();
+
+    glTranslatef(0.0, 0.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    gluCylinder(cilindru, 1.0, 1.0, 1.0, 32, 32);
+    glColor3f(0.2, 0.2, 0.2);
+    
+    glPopMatrix();
 
 
     glPushMatrix();
 
     glTranslatef(0.0, 0.0, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    gluCylinder(cilindruInterior, 0.7, 0.7, 1.0, 32, 32);
-    gluDeleteQuadric(cilindruInterior);
+    gluCylinder(cilindru, 1.1, 1.1, 1.0, 32, 32);
     glColor3f(0.2, 0.2, 0.2);
-
+    
     glPopMatrix();
-
-    glPushMatrix();
-
-    glTranslatef(0.0, 0.0, 0.0);
-    glRotatef(-90, 1.0, 0.0, 0.0);
-    gluCylinder(cilindruExterior, 0.8, 0.8, 1.0, 32, 32);
-    gluDeleteQuadric(cilindruExterior);
-    glColor3f(0.2, 0.2, 0.2);
-
-    glPopMatrix();
+    gluDeleteQuadric(cilindru);
 }
 
 void display() {
@@ -144,7 +175,8 @@ void display() {
     //glutSolidCube(1.0);
     baseWell();
     topWell();
-    
+    barWellLeft();
+    barWellRight();
 
     glutSwapBuffers();
 }
