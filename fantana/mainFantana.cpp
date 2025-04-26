@@ -11,8 +11,9 @@
 #include <glaux.h>
 #include <math.h>
 
-GLfloat eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0;
+GLfloat eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0; 
 
+GLfloat bucketY = -2.0;
 void initScene() {
     glEnable(GL_DEPTH_TEST); 
     glEnable(GL_LIGHTING);   
@@ -95,6 +96,20 @@ void MoveCamera(unsigned char key, int x, int y) {
     glutPostRedisplay();
 }
 
+void moveObject(unsigned char keys, int x, int y) {
+    //creat o functie separata ca poate o sa mai fie obiecte pe care sa le misc
+    //asta plus ca e mai ordonat asa
+    switch (keys)
+    {
+    case 'p':
+        bucketY += 0.02;
+        break;
+    case 'l':
+        bucketY -= 0.02;
+    }
+    glutPostRedisplay();
+}
+
 void drawGround() {
     glDisable(GL_LIGHTING);
     glColor3f(0.5, 0.5, 0.5);
@@ -162,7 +177,7 @@ void coordinates() {
 //}
 
 void partialClinderWell(float radius, float height, float startAngle, float endAngle, int slices) {
-    glDisable(GL_LIGHTING);
+    
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= slices; i++) {
         float angle = startAngle + (endAngle - startAngle) * i / slices;
@@ -173,7 +188,7 @@ void partialClinderWell(float radius, float height, float startAngle, float endA
         glVertex3f(x, height, y);
     }
     glEnd();
-    glEnable(GL_LIGHTING);
+    
 }
 
 void bucket() {
@@ -182,7 +197,7 @@ void bucket() {
     GLUquadric* bucket = gluNewQuadric();
 
     glPushMatrix();
-    glTranslatef(0.0, 4.0, 0.0);
+    glTranslatef(0.0, bucketY, 0.0); 
 
     glPushMatrix();
 
@@ -215,34 +230,27 @@ void bucket() {
     glPushMatrix();
     glTranslatef(0.0, 3.3, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    glColor3f(0.0, 0.0, 1.0);
-    glPushMatrix();
+    
+    
     partialClinderWell(0.22, 0.02, 0.0, 3.14, 16);
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(0.0, 3.3, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    glColor3f(1.0, 0.0, 0.0);
     partialClinderWell(0.2, 0.02, 0.0, 3.14, 16);
-    
     glPopMatrix();
 
     glPushMatrix();
-    glDisable(GL_LIGHTING);
     glTranslatef(0.0, 3.3, 0.0);
-    glColor3f(0.0, 1.0, 0.0);
     gluPartialDisk(bucket, 0.2, 0.22, 16, 16, -90, 180);
-   
     glPopMatrix();
 
     glPushMatrix();
-    
     glTranslatef(0.0, 3.3, -0.02);
-    glColor3f(0.0, 1.0, 0.0);
     gluPartialDisk(bucket, 0.2, 0.22, 16, 16, -90, 180);
-    glEnable(GL_LIGHTING);
     glPopMatrix();
+
     
     glPopMatrix();
     gluDeleteQuadric(bucket);
@@ -403,6 +411,7 @@ int main(int argc, char** argv) {
 
     glutKeyboardFunc(MoveCamera);
     glutSpecialFunc(moveCameraPoint);
+    glutKeyboardFunc(moveObject);
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
