@@ -13,7 +13,7 @@
 
 GLfloat eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0; 
 
-GLfloat bucketY = -2.0;
+GLfloat bucketY = -2.0, lengthRope = 1.5;
 void initScene() {
     glEnable(GL_DEPTH_TEST); 
     glEnable(GL_LIGHTING);   
@@ -94,14 +94,15 @@ void MoveObject(unsigned char key, int x, int y) {
         break;
     case 'p':
         bucketY += 0.02;
+        lengthRope += 0.02;
         break;
     case 'l':
         bucketY -= 0.02;
+        lengthRope -= 0.02;
         break;
     }
     glutPostRedisplay();
 }
-
 
 void drawGround() {
     glDisable(GL_LIGHTING);
@@ -181,7 +182,24 @@ void handleBucketWell(float radius, float height, float startAngle, float endAng
         glVertex3f(x, height, y);
     }
     glEnd();
+
     
+}
+
+void ropeWell(float radius, int slices) {
+    //glDisable(GL_LIGHTING);
+    glBegin(GL_QUAD_STRIP);
+    glColor3f(1.0, 0.0, 0.0);
+    for (int i = 0; i <= slices; i++) {
+        float angle = 2.0 * 3.14 * i / slices;
+        float x = cos(angle) * radius;
+        float z = sin(angle) * radius;
+        glVertex3f(x, 2.0, z);
+
+        glVertex3f(x, lengthRope, z);
+    }
+    glEnd();
+    //glEnable(GL_LIGHTING);
 }
 
 void bucketWell() {
@@ -375,10 +393,10 @@ void display() {
     topRingWell();
     barWellLeft();
     barWellRight();
-    //roof(); //revenim la acoperis mai tarziu
+    roof(); //revenim la acoperis mai tarziu
     barBucketWell();
     bucketWell();
-
+    ropeWell(0.02, 12);
 
     glutSwapBuffers();
 }
