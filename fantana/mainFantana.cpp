@@ -9,6 +9,7 @@
 #include <gl.h>
 #include <glu.h>
 #include <glaux.h>
+#include <math.h>
 
 GLfloat eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0;
 
@@ -138,6 +139,7 @@ void coordinates() {
     glEnable(GL_LIGHTING);
     gluDeleteQuadric(coordinates);
 }
+
 //void roof_debug() {
 //    glDisable(GL_LIGHTING);
 //    glColor3f(1.0, 0.0, 0.0); // roșu pentru contur
@@ -158,6 +160,95 @@ void coordinates() {
 //    glEnd();
 //    glEnable(GL_LIGHTING);
 //}
+
+void partialClinderWell(float radius, float height, float startAngle, float endAngle, int slices) {
+    glDisable(GL_LIGHTING);
+    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= slices; i++) {
+        float angle = startAngle + (endAngle - startAngle) * i / slices;
+        float x = cos(angle) * radius;
+        float y = sin(angle) * radius;
+
+        glVertex3f(x, 0.0, y);
+        glVertex3f(x, height, y);
+    }
+    glEnd();
+    glEnable(GL_LIGHTING);
+}
+
+void bucket() {
+    //grosime galeata 0.02
+
+    GLUquadric* bucket = gluNewQuadric();
+
+    glPushMatrix();
+    glTranslatef(0.0, 4.0, 0.0);
+
+    glPushMatrix();
+
+    glTranslatef(0.0, 3.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    gluCylinder(bucket, 0.15, 0.2, 0.3, 16, 16);
+
+    glPopMatrix();
+
+    glPushMatrix();
+
+    glTranslatef(0.0, 3.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    gluCylinder(bucket, 0.17, 0.22, 0.3, 16, 16);
+
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 3.0, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    gluDisk(bucket, 0, 0.17, 16, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 3.3, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    gluDisk(bucket, 0.2, 0.22, 16, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 3.3, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glColor3f(0.0, 0.0, 1.0);
+    glPushMatrix();
+    partialClinderWell(0.22, 0.02, 0.0, 3.14, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 3.3, 0.0);
+    glRotatef(-90, 1.0, 0.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
+    partialClinderWell(0.2, 0.02, 0.0, 3.14, 16);
+    
+    glPopMatrix();
+
+    glPushMatrix();
+    glDisable(GL_LIGHTING);
+    glTranslatef(0.0, 3.3, 0.0);
+    glColor3f(0.0, 1.0, 0.0);
+    gluPartialDisk(bucket, 0.2, 0.22, 16, 16, -90, 180);
+   
+    glPopMatrix();
+
+    glPushMatrix();
+    
+    glTranslatef(0.0, 3.3, -0.02);
+    glColor3f(0.0, 1.0, 0.0);
+    gluPartialDisk(bucket, 0.2, 0.22, 16, 16, -90, 180);
+    glEnable(GL_LIGHTING);
+    glPopMatrix();
+    
+    glPopMatrix();
+    gluDeleteQuadric(bucket);
+
+
+}
 
 void roof() {
     glBegin(GL_QUADS); //platforma 1
@@ -201,20 +292,21 @@ void barBucketWell() {
     glPopMatrix();
 
     glPopMatrix();
+    gluDeleteQuadric(bucketBar);
 }
 
 void barWellLeft() {
-    GLUquadric* bar = gluNewQuadric();
+    GLUquadric* bar1 = gluNewQuadric();
 
     glPushMatrix();
 
     glTranslatef(0.0, 1.0, 1.05);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    gluCylinder(bar, 0.05, 0.05, 1.5, 5.0, 5.0);
+    gluCylinder(bar1, 0.05, 0.05, 1.5, 5.0, 5.0);
 
     glPopMatrix();
 
-    gluDeleteQuadric(bar);
+    gluDeleteQuadric(bar1);
 }
 
 void barWellRight() {
@@ -282,8 +374,10 @@ void display() {
     topRingWell();
     barWellLeft();
     barWellRight();
-    roof(); //revenim la acoperis mai tarziu
+    //roof(); //revenim la acoperis mai tarziu
     barBucketWell();
+    bucket();
+
 
     glutSwapBuffers();
 }
