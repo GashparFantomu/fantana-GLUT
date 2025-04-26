@@ -72,7 +72,7 @@ void sun() {
     glEnable(GL_LIGHTING);
 }
 
-void MoveCamera(unsigned char key, int x, int y) {
+void MoveObject(unsigned char key, int x, int y) {
     switch (key) {
     case 'a':
         eye_x += 0.1;
@@ -92,23 +92,16 @@ void MoveCamera(unsigned char key, int x, int y) {
     case 'x':
         eye_z -= 0.1;
         break;
-    }
-    glutPostRedisplay();
-}
-
-void moveObject(unsigned char keys, int x, int y) {
-    //creat o functie separata ca poate o sa mai fie obiecte pe care sa le misc
-    //asta plus ca e mai ordonat asa
-    switch (keys)
-    {
     case 'p':
         bucketY += 0.02;
         break;
     case 'l':
         bucketY -= 0.02;
+        break;
     }
     glutPostRedisplay();
 }
+
 
 void drawGround() {
     glDisable(GL_LIGHTING);
@@ -176,7 +169,7 @@ void coordinates() {
 //    glEnable(GL_LIGHTING);
 //}
 
-void partialClinderWell(float radius, float height, float startAngle, float endAngle, int slices) {
+void handleBucketWell(float radius, float height, float startAngle, float endAngle, int slices) {
     
     glBegin(GL_QUAD_STRIP);
     for (int i = 0; i <= slices; i++) {
@@ -191,7 +184,7 @@ void partialClinderWell(float radius, float height, float startAngle, float endA
     
 }
 
-void bucket() {
+void bucketWell() {
     //grosime galeata 0.02
 
     GLUquadric* bucket = gluNewQuadric();
@@ -232,13 +225,13 @@ void bucket() {
     glRotatef(-90, 1.0, 0.0, 0.0);
     
     
-    partialClinderWell(0.22, 0.02, 0.0, 3.14, 16);
+    handleBucketWell(0.22, 0.02, 0.0, 3.14, 16);
     glPopMatrix();
 
     glPushMatrix();
     glTranslatef(0.0, 3.3, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    partialClinderWell(0.2, 0.02, 0.0, 3.14, 16);
+    handleBucketWell(0.2, 0.02, 0.0, 3.14, 16);
     glPopMatrix();
 
     glPushMatrix();
@@ -384,7 +377,7 @@ void display() {
     barWellRight();
     //roof(); //revenim la acoperis mai tarziu
     barBucketWell();
-    bucket();
+    bucketWell();
 
 
     glutSwapBuffers();
@@ -408,10 +401,10 @@ int main(int argc, char** argv) {
     glutCreateWindow("Fantana - Proiect OpenGL");
 
     initScene();
-
-    glutKeyboardFunc(MoveCamera);
+    
+    
     glutSpecialFunc(moveCameraPoint);
-    glutKeyboardFunc(moveObject);
+    glutKeyboardFunc(MoveObject);
 
     glutDisplayFunc(display);
     glutReshapeFunc(reshape);
