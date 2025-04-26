@@ -97,15 +97,83 @@ void drawGround() {
 
 }
 
+void coordinates() {
+    GLUquadric* coordinates = gluNewQuadric();
+
+    glPushMatrix();
+    glDisable(GL_LIGHTING);
+    glTranslatef(5.0, 0.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
+    gluSphere(coordinates, 0.1, 16.0, 16.0);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(-5.0, 0.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
+    glutSolidCube(0.2);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, 5.0);
+    gluSphere(coordinates, 0.1, 16.0, 16.0);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, -5.0);
+    glutSolidCube(0.2);
+    glPopMatrix();
+
+    glEnable(GL_LIGHTING);
+    gluDeleteQuadric(coordinates);
+}
+//void roof_debug() {
+//    glDisable(GL_LIGHTING);
+//    glColor3f(1.0, 0.0, 0.0); // roșu pentru contur
+//    glBegin(GL_LINE_LOOP); // doar linia care unește punctele
+//    glVertex3f(0.0, 2.5, -1.2);
+//    glVertex3f(-1.0, 2.1, -1.2);
+//    glVertex3f(-1.0, 2.1, 1.2);
+//    glVertex3f(0.0, 2.5, 1.2);
+//    glEnd();
+//
+//    glColor3f(0.0, 0.0, 1.0); // albastru pentru al doilea contur
+//    glBegin(GL_LINE_LOOP);
+//    glVertex3f(0.0, 2.5, -1.2);
+//
+//    glVertex3f(1.0, 2.1, -1.2);
+//    glVertex3f(0.0, 2.5, 1.2);
+//    glVertex3f(1.0, 2.1, 1.2);
+//    glEnd();
+//    glEnable(GL_LIGHTING);
+//}
+
+void roof() {
+    glBegin(GL_QUADS); //platforma 1
+    glVertex3f(0.0, 2.5, -1.2);
+    glVertex3f(-1.0, 2.1, -1.2);
+    glVertex3f(-1.0, 2.1, 1.2); 
+    glVertex3f(0.0, 2.5, 1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    glVertex3f(0.0, 2.5, -1.2);
+    glVertex3f(0.0, 2.5, 1.2);
+    glVertex3f(1.0, 2.1, 1.2);
+    glVertex3f(1.0, 2.1, -1.2);
+    glEnd();
+
+}
+
 void barWellLeft() {
     GLUquadric* bar = gluNewQuadric();
 
     glPushMatrix();
 
-    glTranslatef(1.05, 1.0, 0.0);
+    glTranslatef(0.0, 1.0, 1.05);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    glColor3f(0.0, 0.1, 0.4);
-    gluCylinder(bar, 0.05, 0.05, 1.0, 5.0, 5.0);
+    gluCylinder(bar, 0.05, 0.05, 1.5, 5.0, 5.0);
 
     glPopMatrix();
 
@@ -117,24 +185,23 @@ void barWellRight() {
 
     glPushMatrix();
 
-    glTranslatef(-1.05, 1.0, 0.0);
+    glTranslatef(0.0, 1.0, -1.05);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    glColor3f(0.0, 0.1, 0.4);
-    gluCylinder(bar, 0.05, 0.05, 1.0, 5.0, 5.0);
+    gluCylinder(bar, 0.05, 0.05, 1.5, 5.0, 5.0);
 
     glPopMatrix();
 
     gluDeleteQuadric(bar);
 }
 
-void topWell() {
+void topRingWell() {
     GLUquadric* top = gluNewQuadric();
 
     glPushMatrix();
 
     glTranslatef(0.0, 1.0, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
-    glColor3f(0.2, 0.2, 0.2);
+    
     gluDisk(top, 1.0, 1.1, 32, 32);
 
     glPopMatrix();
@@ -150,7 +217,7 @@ void baseWell() {
     glTranslatef(0.0, 0.0, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
     gluCylinder(cilindru, 1.0, 1.0, 1.0, 32, 32);
-    glColor3f(0.2, 0.2, 0.2);
+    
     
     glPopMatrix();
 
@@ -160,7 +227,7 @@ void baseWell() {
     glTranslatef(0.0, 0.0, 0.0);
     glRotatef(-90, 1.0, 0.0, 0.0);
     gluCylinder(cilindru, 1.1, 1.1, 1.0, 32, 32);
-    glColor3f(0.2, 0.2, 0.2);
+    
     
     glPopMatrix();
     gluDeleteQuadric(cilindru);
@@ -172,11 +239,12 @@ void display() {
     camera();
     
     drawGround();
-    //glutSolidCube(1.0);
+    coordinates();
     baseWell();
-    topWell();
+    topRingWell();
     barWellLeft();
     barWellRight();
+    roof();
 
     glutSwapBuffers();
 }
