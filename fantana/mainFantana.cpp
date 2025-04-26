@@ -38,10 +38,10 @@ void camera() {
 void moveCameraPoint(int arrowKey, int x, int y) {
     switch (arrowKey) {
     case GLUT_KEY_RIGHT:
-        center_x += 0.1;
+        center_x -= 0.1;
         break;
     case GLUT_KEY_LEFT:
-        center_x -= 0.1;
+        center_x += 0.1;
         break;
     case GLUT_KEY_UP:
         center_y += 0.1;
@@ -58,6 +58,16 @@ void moveCameraPoint(int arrowKey, int x, int y) {
 
     }
     glutPostRedisplay();
+}
+
+void sun() {
+    glDisable(GL_LIGHTING);
+    glPushMatrix();
+    glTranslatef(2.0, 5.0, 5.0);
+    glColor3f(1.0, 9.0, 0.0);
+    glutSolidSphere(0.1, 16, 16);
+    glPopMatrix();
+    glEnable(GL_LIGHTING);
 }
 
 void MoveCamera(unsigned char key, int x, int y) {
@@ -85,7 +95,7 @@ void MoveCamera(unsigned char key, int x, int y) {
 }
 
 void drawGround() {
-    //glDisable(GL_LIGHTING);
+    glDisable(GL_LIGHTING);
     glColor3f(0.5, 0.5, 0.5);
     glBegin(GL_QUADS);
     glVertex3f(-5.0, 0.0, -5.0);
@@ -93,7 +103,7 @@ void drawGround() {
     glVertex3f(5.0, 0.0, 5.0);
     glVertex3f(5.0, 0.0, -5.0);
     glEnd();
-    //glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHTING);
 
 }
 
@@ -164,6 +174,33 @@ void roof() {
     glVertex3f(1.0, 2.1, -1.2);
     glEnd();
 
+}
+
+void barBucketWell() {
+    GLUquadric* bucketBar = gluNewQuadric();
+    glPushMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 2.0, -1.05);
+    gluCylinder(bucketBar, 0.03, 0.03, 2.1, 16, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 2.0, -0.55);
+    gluCylinder(bucketBar, 0.1, 0.1, 1.1, 16, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 2.0, 0.55);
+    gluDisk(bucketBar, 0, 0.1, 16, 16);
+    glPopMatrix();
+
+    glPushMatrix();
+    glTranslatef(0.0, 2.0, -0.55);
+    gluDisk(bucketBar, 0, 0.1, 16, 16);
+    glPopMatrix();
+
+    glPopMatrix();
 }
 
 void barWellLeft() {
@@ -237,14 +274,16 @@ void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     camera();
-    
-    drawGround();
+    sun();
     coordinates();
+
+    drawGround();
     baseWell();
     topRingWell();
     barWellLeft();
     barWellRight();
-    roof();
+    roof(); //revenim la acoperis mai tarziu
+    barBucketWell();
 
     glutSwapBuffers();
 }
