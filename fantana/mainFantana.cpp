@@ -14,16 +14,27 @@
 GLfloat eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0; 
 
 GLfloat bucketY = -2.0, lengthRope = 1.5;
-void initScene() {
-    glEnable(GL_DEPTH_TEST); 
-    glEnable(GL_LIGHTING);   
-    glEnable(GL_LIGHT0);     
 
-    
+GLfloat lightPosX = 2.0, lightPosY = 5.0, lightPosZ = 5.0, lightPosW = 1.0;
+
+GLfloat shadowMat[4][4] = { 
+    { lightPosY, 0,0,0 }, 
+    {-lightPosX, 0, -lightPosZ, -1}, 
+    {0,0,lightPosY, 0}, 
+    {0,0,0,lightPosY} };
+
+void initScene() {
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
+
     glClearColor(0.2, 0.4, 0.6, 1.0);
 
     // poziția luminii
-    GLfloat light_pos[] = { 2.0, 5.0, 5.0, 1.0 }; // x, y, z, w
+    GLfloat light_pos[] = { lightPosX, lightPosY, lightPosZ, lightPosW }; // x, y, z, w
+    
+
     glLightfv(GL_LIGHT0, GL_POSITION, light_pos);
 }
 
@@ -110,10 +121,10 @@ void drawGround() {
     glDisable(GL_LIGHTING);
     glColor3f(0.5, 0.5, 0.5);
     glBegin(GL_QUADS);
-    glVertex3f(-5.0, 0.0, -5.0);
-    glVertex3f(-5.0, 0.0, 5.0);
-    glVertex3f(5.0, 0.0, 5.0);
-    glVertex3f(5.0, 0.0, -5.0);
+    glVertex3f(-5.0, -0.01, -8.0);
+    glVertex3f(-5.0, -0.01, 5.0);
+    glVertex3f(5.0, -0.01, 5.0);
+    glVertex3f(5.0, -0.01, -8.0);
     glEnd();
     glEnable(GL_LIGHTING);
 
@@ -170,7 +181,7 @@ void handleBucketWell(float radius, float height, float startAngle, float endAng
 void ropeWell(float radius, int slices) {
     //glDisable(GL_LIGHTING);
     glBegin(GL_QUAD_STRIP);
-    glColor3f(1.0, 0.0, 0.0);
+    
     for (int i = 0; i <= slices; i++) {
         float angle = 2.0 * 3.14 * i / slices;
         float x = cos(angle) * radius;
@@ -325,7 +336,6 @@ void roofWell() {
     glEnd();
 
     glBegin(GL_QUADS);
-    glColor3f(0.0, 1.0, 0.0);
     glVertex3f(1.0, 2.1, -1.2);
     glVertex3f(1.0, 2.1, 1.2);
     glVertex3f(1.0, 2.2, 1.2);
@@ -430,6 +440,17 @@ void baseWell() {
     gluDeleteQuadric(cilindru);
 }
 
+void entireWell() {
+    baseWell();
+    topRingWell();
+    barWellLeft();
+    barWellRight();
+    roofWell();
+    barBucketWell();
+    bucketWell();
+    ropeWell(0.01, 12);
+}
+
 void display() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -437,15 +458,19 @@ void display() {
     sun();
     coordinates();
 
+    glEnable(GL_LIGHTING);
     drawGround();
-    baseWell();
-    topRingWell();
-    barWellLeft();
-    barWellRight();
-    roofWell(); //revenim la acoperis mai tarziu
-    barBucketWell();
-    bucketWell();
-    ropeWell(0.01, 12);
+    entireWell();
+    //========================
+    glDisable(GL_LIGHTING);
+    glColor4f(0.0, 0.0, 0.0, 0.5);
+
+    glPushMatrix();
+    glMultMatrixf((GLfloat*)shadowMat);
+    entireWell();
+    glPopMatrix();
+    
+    glEnable(GL_LIGHTING);
 
     glutSwapBuffers();
 }
