@@ -57,7 +57,9 @@ void moveCameraPoint(int arrowKey, int x, int y) {
     case GLUT_KEY_PAGE_DOWN:
         center_z -= 0.1;
         break;
-
+    case GLUT_KEY_F6:
+        eye_x = 3.0, eye_y = 3.0, eye_z = 6.0, center_x = 0.0, center_y = 0.0, center_z = 0.0;
+        break;
     }
     glutPostRedisplay();
 }
@@ -148,27 +150,6 @@ void coordinates() {
     glEnable(GL_LIGHTING);
     gluDeleteQuadric(coordinates);
 }
-
-//void roof_debug() {
-//    glDisable(GL_LIGHTING);
-//    glColor3f(1.0, 0.0, 0.0); // roșu pentru contur
-//    glBegin(GL_LINE_LOOP); // doar linia care unește punctele
-//    glVertex3f(0.0, 2.5, -1.2);
-//    glVertex3f(-1.0, 2.1, -1.2);
-//    glVertex3f(-1.0, 2.1, 1.2);
-//    glVertex3f(0.0, 2.5, 1.2);
-//    glEnd();
-//
-//    glColor3f(0.0, 0.0, 1.0); // albastru pentru al doilea contur
-//    glBegin(GL_LINE_LOOP);
-//    glVertex3f(0.0, 2.5, -1.2);
-//
-//    glVertex3f(1.0, 2.1, -1.2);
-//    glVertex3f(0.0, 2.5, 1.2);
-//    glVertex3f(1.0, 2.1, 1.2);
-//    glEnd();
-//    glEnable(GL_LIGHTING);
-//}
 
 void handleBucketWell(float radius, float height, float startAngle, float endAngle, int slices) {
     
@@ -269,7 +250,8 @@ void bucketWell() {
 
 }
 
-void roof() {
+void roofWell() {
+    //grosime acoperis 0.1
     glBegin(GL_QUADS); //platforma 1
     glVertex3f(0.0, 2.5, -1.2);
     glVertex3f(-1.0, 2.1, -1.2);
@@ -284,6 +266,72 @@ void roof() {
     glVertex3f(1.0, 2.1, -1.2);
     glEnd();
 
+    //=======
+
+    glBegin(GL_QUADS); //platforma 2
+    
+    glVertex3f(0.0, 2.6, -1.2);
+    glVertex3f(-1.0, 2.2, -1.2);
+    glVertex3f(-1.0, 2.2, 1.2);
+    glVertex3f(0.0, 2.6, 1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+
+    glVertex3f(0.0, 2.6, -1.2);
+    glVertex3f(0.0, 2.6, 1.2);
+    glVertex3f(1.0, 2.2, 1.2);
+    glVertex3f(1.0, 2.2, -1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    
+    glVertex3f(-1.0, 2.1, -1.2);
+    glVertex3f(-1.0, 2.2, -1.2);
+    glVertex3f(0.0, 2.6, -1.2);
+    glVertex3f(0.0, 2.5, -1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    
+    glVertex3f(-1.0, 2.1, 1.2);
+    glVertex3f(-1.0, 2.2, 1.2);
+    glVertex3f(0.0, 2.6, 1.2);
+    glVertex3f(0.0, 2.5, 1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    
+    glVertex3f(1.0, 2.1, 1.2);
+    glVertex3f(1.0, 2.2, 1.2);
+    glVertex3f(0.0, 2.6, 1.2);
+    glVertex3f(0.0, 2.5, 1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    
+    glVertex3f(1.0, 2.1, -1.2);
+    glVertex3f(1.0, 2.2, -1.2);
+    glVertex3f(0.0, 2.6, -1.2);
+    glVertex3f(0.0, 2.5, -1.2);
+    glEnd();
+
+    glBegin(GL_QUADS);
+    
+    glVertex3f(-1.0, 2.1, -1.2);
+    glVertex3f(-1.0, 2.1, 1.2);
+    glVertex3f(-1.0, 2.2, 1.2);
+    glVertex3f(-1.0, 2.2, -1.2);
+    glEnd();
+
+
+    glBegin(GL_QUAD_STRIP);
+    glColor3f(0.0, 1.0, 0.0);
+    glVertex3f(-1.0, 2.1, -1.2);
+    glVertex3f(-1.0, 2.1, 1.2);
+    glVertex3f(-1.0, 2.2, 1.2);
+    glVertex3f(-1.0, 2.2, -1.2);
+    glEnd();
 }
 
 void barBucketWell() {
@@ -393,10 +441,10 @@ void display() {
     topRingWell();
     barWellLeft();
     barWellRight();
-    roof(); //revenim la acoperis mai tarziu
+    roofWell(); //revenim la acoperis mai tarziu
     barBucketWell();
     bucketWell();
-    ropeWell(0.02, 12);
+    ropeWell(0.01, 12);
 
     glutSwapBuffers();
 }
